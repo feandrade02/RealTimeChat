@@ -1,0 +1,45 @@
+.sidebar {
+    width: 20%;
+    background-color: #2b6f88;
+    color: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #234e64;
+  }
+  
+  .conversas {
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .contato {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: #317791;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  
+  .online {
+    background-color: green;
+  }
+  
+  .offline {
+    background-color: red;
+  }
+  

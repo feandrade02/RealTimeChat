@@ -1,0 +1,14 @@
+.cabecalho {
+    background-color: #234e64;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  .status-text {
+    font-size: 0.8em;
+  }
+  
