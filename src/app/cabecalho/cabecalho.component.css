@@ -6,6 +6,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
+    border-left: 2px solid #ffffff5b;
   }
   
   .status-text {

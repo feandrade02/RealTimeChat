@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../name.service';
+import { UserNameService } from '../name.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -20,10 +20,10 @@ export class SideBarComponent implements OnInit {
 
   userName = '';
 
-  constructor(private userService: UserService) {}
+  constructor(private userNameService: UserNameService) {}
 
   ngOnInit() {
-    this.userService.userNameObservable.subscribe(name => {
+    this.userNameService.userNameObservable.subscribe(name => {
       this.userName = name;
     });
   }

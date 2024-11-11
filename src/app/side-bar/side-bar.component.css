@@ -27,7 +27,7 @@
     padding: 8px;
     background-color: #317791;
     border-radius: 5px;
-    margin-bottom: 5px;
+    margin-top: 10px;
   }
   
   .status {
@@ -37,9 +37,11 @@
   }
   
   .online {
-    background-color: green;
+    background-color: rgb(0, 218, 0);
+    box-shadow: 0 0 8px 4px rgba(0, 218, 0, 0.8);
   }
   
   .offline {
-    background-color: red;
+    background-color: rgb(255, 0, 0);
+    box-shadow: 0 0 8px 4px rgba(255, 0, 0, 0.8);
   }

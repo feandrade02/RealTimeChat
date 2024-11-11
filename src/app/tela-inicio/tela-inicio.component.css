@@ -56,3 +56,9 @@
     background-color: #4f92c0;
   }
   
+  .error-message {
+    margin-bottom: 15px;
+    font-size: large;
+    color: rgb(255, 43, 43);
+    background-color:rgba(0, 0, 0, 0.418);
+  }
