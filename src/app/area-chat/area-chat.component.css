@@ -1,14 +1,17 @@
 .chat {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    overflow: hidden;
+    height: 96vh;
   }
   
   .mensagens {
     flex: 1;
     padding: 10px;
     overflow-y: auto;
+  }
+
+  p {
+    margin-top: 10px;
   }
   
   .input-area {
