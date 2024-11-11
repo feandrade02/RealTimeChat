@@ -1,9 +1,9 @@
 .sidebar {
-    width: 20%;
     background-color: #2b6f88;
     color: white;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
   
   .header {
@@ -15,6 +15,7 @@
   }
   
   .conversas {
+    flex: 1;
     padding: 10px;
     overflow-y: auto;
   }
@@ -42,4 +43,3 @@
   .offline {
     background-color: red;
   }
-  
