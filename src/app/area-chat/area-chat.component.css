@@ -1,7 +1,7 @@
 .chat {
     display: flex;
     flex-direction: column;
-    height: 96vh;
+    height: 94vh;
   }
   
   .mensagens {
