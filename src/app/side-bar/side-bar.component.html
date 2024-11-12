@@ -5,9 +5,8 @@
     </div>
     <div class="conversas">
       <h3>Conversas</h3>
-      <div *ngFor="let contact of contacts.client_list" class="contato">
+      <div *ngFor="let contact of filteredContacts" class="contato">
         <span>{{ contact.clientName }}</span>
-        <!-- <span class="status" [class.online]="contact.status === 'online'" [class.offline]="contact.status === 'offline'"></span> -->
       </div>
     </div>
   </div>
