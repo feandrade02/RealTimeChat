@@ -8,7 +8,9 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class UserNameService {
-  private apiUrl = 'https://seu-servidor-api.com/username';
+  private apiUrlpostname = 'http://localhost:5000/api/chat/connect';
+  private apiUrlgetname = 'http://localhost:5000/api/chat/list';
+
   private userNameSubject = new BehaviorSubject<string>('');
   userNameObservable = this.userNameSubject.asObservable();
 
@@ -16,7 +18,7 @@ export class UserNameService {
 
   // Enviar nome para o servidor
   setUserName(name: string): Observable<any> {
-    return this.http.post(this.apiUrl, { name }).pipe(
+    return this.http.post(this.apiUrlpostname, { name }).pipe(
       // Após enviar o nome, atualiza o BehaviorSubject com o nome enviado
       tap(() => {
         this.userNameSubject.next(name);
@@ -26,7 +28,7 @@ export class UserNameService {
 
   // Recuperar nome do servidor
   getUserName(): Observable<string> {
-    return this.http.get<string>(this.apiUrl).pipe(
+    return this.http.get<string>(this.apiUrlgetname).pipe(
       // Atualiza o BehaviorSubject com o nome recuperado
       tap((name: string) => {
         this.userNameSubject.next(name);
