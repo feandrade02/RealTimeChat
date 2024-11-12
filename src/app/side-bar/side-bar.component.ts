@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
+import { Observable } from 'rxjs';
 
 interface Contact {
   clientId: number;
@@ -16,19 +17,15 @@ interface Contact {
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent implements OnInit {
-  userName: string = '';
-  clientId: number | null = null;
+  clientId$!: Observable<number | null>;
+  userName$!: Observable<string>;
   contacts: Contact[] = [];
 
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-    // Inscreve-se para receber atualizações do nome
-    this.userService.userNameObservable.subscribe(name => {
-      this.userName = name; // Atualiza a variável com o nome recebido
-    });
-
-    this.clientId = this.userService.getCurrentClientId();
+    this.clientId$ = this.userService.currentClientId$;
+    this.userName$ = this.userService.userName$;
 
     // Busca a lista de contatos do servidor
     this.loadContacts();

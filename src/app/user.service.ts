@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 
 interface ConnectResponse {
   clientId: number;
+  clientName: string;
   message: string;
 }
 
@@ -25,22 +26,43 @@ export class UserService {
   private baseUrl = 'http://localhost:5000/api/chat';
   private currentClientId: number | null = null;
 
-  private userNameSubject = new BehaviorSubject<string>('');
-  userNameObservable = this.userNameSubject.asObservable();
+  private currentClientIdSubject = new BehaviorSubject<number | null>(null);
+  currentClientId$ = this.currentClientIdSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  private userNameSubject = new BehaviorSubject<string>('');
+  userName$ = this.userNameSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    const storedClientId = Number(localStorage.getItem('clientId'));
+    const storedUserName = localStorage.getItem('userName') || '';
+  
+    if (!isNaN(storedClientId)) {
+      this.currentClientIdSubject.next(storedClientId);
+    }
+  
+    this.userNameSubject.next(storedUserName);
+  }
 
   // Conectar usuário (POST /connect)
   setUserName(name: string): Observable<ConnectResponse> {
-    // Adiciona o nome como parâmetro da URL
     const params = new HttpParams().set('nome', name);
     
     return this.http.post<ConnectResponse>(`${this.baseUrl}/connect`, null, { params }).pipe(
       tap(response => {
-        this.currentClientId = response.clientId;
-        this.userNameSubject.next(name);
+        this.currentClientIdSubject.next(response.clientId);
+        this.userNameSubject.next(response.clientName);
+        localStorage.setItem('clientId', response.clientId.toString());
+        localStorage.setItem('userName', response.clientName);
       })
     );
+  }
+
+  getCurrentClientId(): number | null {
+    return this.currentClientIdSubject.value;
+  }
+
+  getCurrentUserName(): string {
+    return this.userNameSubject.value;
   }
 
   getContactList(): Observable<Contact[]> {
@@ -74,11 +96,6 @@ export class UserService {
       .set('targetClientId', targetClientId);
     
     return this.http.get(`${this.baseUrl}/load-messages`, { params });
-  }
-
-  // Getter para o ID do cliente atual
-  getCurrentClientId(): number | null {
-    return this.currentClientId;
   }
 
 }

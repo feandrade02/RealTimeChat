@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="header">
-      <span>{{ userName }}</span>
-      <span>ID: {{ clientId }}</span>
+      <span>{{ userName$ | async }}</span>
+      <span>ID: {{ clientId$ | async }}</span>
     </div>
     <div class="conversas">
       <h3>Conversas</h3>
