@@ -11,8 +11,10 @@ interface ConnectResponse {
 
 interface Contact {
   clientId: number;
-  name: string;
-  status: 'online' | 'offline';
+  clientName: string;
+  currentConversationWith: number;
+  lastActivity: string;
+  // status: 'online' | 'offline';
 }
 
 interface ClientList {
@@ -65,8 +67,8 @@ export class UserService {
     return this.userNameSubject.value;
   }
 
-  getContactList(): Observable<Contact[]> {
-    return this.http.get<Contact[]>(`${this.baseUrl}/list`);
+  getContactList(): Observable<ClientList> {
+    return this.http.get<ClientList>(`${this.baseUrl}/list`);
   }
 
   // Iniciar conversa com outro usuário

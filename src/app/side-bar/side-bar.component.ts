@@ -5,8 +5,14 @@ import { Observable } from 'rxjs';
 
 interface Contact {
   clientId: number;
-  name: string;
-  status: 'online' | 'offline';
+  clientName: string;
+  currentConversationWith: number;
+  lastActivity: string;
+  // status: 'online' | 'offline';
+}
+
+interface ClientList {
+  client_list: Contact[];
 }
 
 @Component({
@@ -19,7 +25,7 @@ interface Contact {
 export class SideBarComponent implements OnInit {
   clientId$!: Observable<number | null>;
   userName$!: Observable<string>;
-  contacts: Contact[] = [];
+  contacts: ClientList = { client_list: [] };
 
   constructor(private userService: UserService) {}
 
@@ -33,7 +39,8 @@ export class SideBarComponent implements OnInit {
 
   private loadContacts() {
     this.userService.getContactList().subscribe(
-      (contactList: Contact[]) => {
+      (contactList: ClientList) => {
+        console.log('Contatos carregados:', contactList);
         this.contacts = contactList;
       },
       (error) => {
