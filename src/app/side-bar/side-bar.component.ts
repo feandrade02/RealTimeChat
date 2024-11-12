@@ -23,8 +23,12 @@ export class SideBarComponent implements OnInit {
   constructor(private userNameService: UserNameService) {}
 
   ngOnInit() {
+    // Inscreve-se para receber atualizações do nome
     this.userNameService.userNameObservable.subscribe(name => {
-      this.userName = name;
+      this.userName = name; // Atualiza a variável com o nome recebido
     });
+
+    // Se necessário, faz uma requisição GET para inicializar o nome
+    this.userNameService.getUserName().subscribe();
   }
 }
