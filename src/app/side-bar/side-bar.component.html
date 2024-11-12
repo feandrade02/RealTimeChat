@@ -1,13 +1,13 @@
 <div class="sidebar">
     <div class="header">
       <span>{{ userName }}</span>
-      <span>ID:</span>
+      <span>ID: {{ clientId }}</span>
     </div>
     <div class="conversas">
       <h3>Conversas</h3>
-      <div *ngFor="let contato of contatos" class="contato">
-        <span>{{ contato.nome }}</span>
-        <span class="status" [class.online]="contato.status === 'online'" [class.offline]="contato.status === 'offline'"></span>
+      <div *ngFor="let contact of contacts" class="contato">
+        <span>{{ contact.name }}</span>
+        <span class="status" [class.online]="contact.status === 'online'" [class.offline]="contact.status === 'offline'"></span>
       </div>
     </div>
   </div>

@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { UserNameService } from '../name.service';
+import { UserService } from '../user.service';
+
+interface Contact {
+  clientId: number;
+  name: string;
+  status: 'online' | 'offline';
+}
 
 @Component({
   selector: 'app-side-bar',
@@ -10,25 +16,32 @@ import { UserNameService } from '../name.service';
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent implements OnInit {
-  contatos = [
-    { nome: 'Colega de trabalho', status: 'online' },
-    { nome: 'Nome', status: 'online' },
-    { nome: 'Nome', status: 'offline' },
-    { nome: 'Nome', status: 'offline' },
-    { nome: 'Nome', status: 'offline' }
-  ];
+  userName: string = '';
+  clientId: number | null = null;
+  contacts: Contact[] = [];
 
-  userName = '';
-
-  constructor(private userNameService: UserNameService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
     // Inscreve-se para receber atualizações do nome
-    this.userNameService.userNameObservable.subscribe(name => {
+    this.userService.userNameObservable.subscribe(name => {
       this.userName = name; // Atualiza a variável com o nome recebido
     });
 
-    // Se necessário, faz uma requisição GET para inicializar o nome
-    this.userNameService.getUserName().subscribe();
+    this.clientId = this.userService.getCurrentClientId();
+
+    // Busca a lista de contatos do servidor
+    this.loadContacts();
+  }
+
+  private loadContacts() {
+    this.userService.getContactList().subscribe(
+      (contactList: Contact[]) => {
+        this.contacts = contactList;
+      },
+      (error) => {
+        console.error('Erro ao carregar contatos:', error);
+      }
+    );
   }
 }
