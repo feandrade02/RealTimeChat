@@ -147,8 +147,8 @@ export class UserService {
   // Carregar mensagens anteriores
   loadMessages(targetClientId: number): Observable<any> {
     const params = new HttpParams()
-      .set('clientId', this.currentClientId!)
-      .set('targetClientId', targetClientId);
+      .set('clientId', this.currentClientId ?? 0)
+      .set('targetClientId', targetClientId.toString());
     
     return this.http.get(`${this.baseUrl}/load-messages`, { params });
   }
