@@ -99,9 +99,11 @@ export class UserService {
   // Enviar mensagem
   sendMessage(receiverId: number, content: string): Observable<any> {
     const message = {
-      senderId: this.currentClientId,
+      senderId: this.currentClientId$,
       receiverId: receiverId,
-      content: content
+      content: content,
+      timestamp: new Date().toISOString(),
+      conversationId: 0
     };
     
     return this.http.post(`${this.baseUrl}/send`, message);

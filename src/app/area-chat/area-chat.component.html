@@ -1,11 +1,11 @@
 <div class="chat">
     <div class="mensagens">
       <p *ngFor="let mensagem of mensagens">
-        <strong>{{ mensagem.autor }}:</strong> {{ mensagem.texto }}
+        <strong>{{ mensagem }}</strong>
       </p>
     </div>
     <div class="input-area">
-      <input type="text" placeholder="Mensagem" />
-      <button>Enviar</button>
+      <input type="text" placeholder="Mensagem" [(ngModel)]="mensagemConteudo"/>
+      <button (click)="sendMessage()">Enviar</button>
     </div>
   </div>
