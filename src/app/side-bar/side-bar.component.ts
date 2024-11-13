@@ -1,15 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../user.service';
 import { Observable } from 'rxjs';
-
-interface Contact {
-  clientId: number;
-  clientName: string;
-  currentConversationWith: number;
-  lastActivity: string;
-  // status: 'online' | 'offline';
-}
+import { Contact } from '../user.service';
 
 interface ClientList {
   client_list: Contact[];
@@ -23,12 +16,17 @@ interface ClientList {
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent implements OnInit {
-  clientId$!: Observable<number | null>;
+  @Output() contactSelected = new EventEmitter<Contact>();
+
+  clientId$!: Observable<number>;
   userName$!: Observable<string>;
-  currentUserId!: number | null;
+  activeContact$!: Observable<Contact | null>;
+  currentUserId!: number;
   contacts: ClientList = { client_list: [] };
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+    this.activeContact$ = this.userService.activeContact$;
+  }
 
   ngOnInit() {
     this.clientId$ = this.userService.currentClientId$;
@@ -54,5 +52,19 @@ export class SideBarComponent implements OnInit {
 
   get filteredContacts() {
     return this.contacts.client_list.filter(contact => contact.clientId !== this.currentUserId);
+  }
+
+  // selectContact(contact: Contact) {
+  //   this.contactSelected.emit(contact);
+  // }
+
+  onContactClick(contact: Contact) {
+    // Primeiro emitimos o evento
+    this.contactSelected.emit(contact);
+    
+    // Depois iniciamos a conversação
+    this.userService.startConversation(this.currentUserId, contact.clientId).subscribe(() => {
+      this.userService.setActiveContact(contact);
+    })
   }
 }

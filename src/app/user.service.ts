@@ -9,12 +9,11 @@ interface ConnectResponse {
   message: string;
 }
 
-interface Contact {
+export interface Contact {
   clientId: number;
   clientName: string;
   currentConversationWith: number;
   lastActivity: string;
-  // status: 'online' | 'offline';
 }
 
 interface ClientList {
@@ -26,9 +25,13 @@ interface ClientList {
 })
 export class UserService {
   private baseUrl = 'http://localhost:5000/api/chat';
-  private currentClientId: number | null = null;
+  private currentClientId: number = 0;
+  private contacts: ClientList = { client_list: [] }; 
 
-  private currentClientIdSubject = new BehaviorSubject<number | null>(null);
+  private activeContactSubject = new BehaviorSubject<Contact | null>(null);
+  activeContact$ = this.activeContactSubject.asObservable();
+
+  private currentClientIdSubject = new BehaviorSubject<number>(0);
   currentClientId$ = this.currentClientIdSubject.asObservable();
 
   private userNameSubject = new BehaviorSubject<string>('');
@@ -68,18 +71,28 @@ export class UserService {
   }
 
   getContactList(): Observable<ClientList> {
-    return this.http.get<ClientList>(`${this.baseUrl}/list`);
+    return this.http.get<ClientList>(`${this.baseUrl}/list`).pipe(
+      tap((contactList: ClientList) => {
+        this.contacts = contactList;
+      })
+    );
   }
 
   // Iniciar conversa com outro usuário
-  startConversation(targetClientId: number): Observable<any> {
-    const params = new HttpParams()
-      .set('clientId', this.currentClientId!)
-      .set('targetClientId', targetClientId);
-    
-    return this.http.post(`${this.baseUrl}/start-conversation`, null, { params });
+  startConversation(clientId: number, targetClientId: number): Observable<any> {
+    const params = new HttpParams().set('clientId', clientId.toString()).set('targetClientId', targetClientId.toString());
+    return this.http.post(`${this.baseUrl}/start-conversation`, null, { params }).pipe(
+      tap(() => {
+        const contact = this.contacts.client_list.find(c => c.clientId === targetClientId);
+        if (contact) this.setActiveContact(contact);
+      })
+    );
   }
 
+  setActiveContact(contact: Contact) {
+    this.activeContactSubject.next(contact);
+  }
+  
   // Enviar mensagem
   sendMessage(receiverId: number, content: string): Observable<any> {
     const message = {

@@ -25,9 +25,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px;
-    background-color: #1f5569;
+    background-color: #1a4555;
     border-radius: 5px;
     margin-top: 10px;
+    cursor: pointer;
+  }
+  .contato:hover {
+    background-color:#205669;
   }
   
   .notification {
