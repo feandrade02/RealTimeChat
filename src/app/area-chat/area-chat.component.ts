@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class AreaChatComponent {
   activeContact$!: Observable<Contact | null>;
   mensagemConteudo: string = '';
-  mensagens: object[] = [];
+  mensagens: { autor: string, texto: string }[] = []; 
 
   constructor(private userService: UserService) {}
 

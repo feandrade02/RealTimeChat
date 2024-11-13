@@ -1,7 +1,7 @@
 <div class="chat">
     <div class="mensagens">
       <p *ngFor="let mensagem of mensagens">
-        <strong>{{ mensagem }}</strong>
+        <strong>{{ mensagem.autor }}:</strong> {{ mensagem.texto }}
       </p>
     </div>
     <div class="input-area">
