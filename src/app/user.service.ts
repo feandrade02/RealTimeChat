@@ -154,23 +154,23 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/load-messages`, { params });
   }
 
-  startPollingMessages(intervalMs: number) {
-    var id: number;
-    this.activeContact$.subscribe(contact => {
-      if(contact){
-        id = contact.clientId;
-      }
-    })
-    this.subscription2 = interval(intervalMs).pipe(
-      switchMap(() => this.loadMessages(id))
-    ).subscribe(
-      (messagesList) => {
-        console.log('Updated messages:', messagesList);
-      },
-      (error) => {
-        console.error('Error fetching contact list:', error);
-      }
-    );
-  }
+startPollingMessages(intervalMs: number) {
+  var id: number;
+  this.activeContact$.subscribe(contact => {
+    if(contact){
+      id = contact.clientId;
+    }
+  })
+  this.subscription2 = interval(intervalMs).pipe(
+    switchMap(() => this.loadMessages(id))
+  ).subscribe(
+    (messagesList) => {
+      console.log('Updated messages:', messagesList);
+    },
+    (error) => {
+      console.error('Error fetching contact list:', error);
+    }
+  );
+}
 
 }
