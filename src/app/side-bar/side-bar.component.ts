@@ -29,23 +29,9 @@ export class SideBarComponent implements OnInit {
     this.userName$ = this.userService.userName$;
 
     this.clientId$.subscribe(id => (this.currentUserId = id));
-
-    // Busca a lista de contatos do servidor
-    this.loadContacts();
-    // Start polling every 5 seconds (5000 ms)
-    this.userService.startPolling(5000);
-  }
-
-  private loadContacts() {
-    this.userService.getContactList().subscribe(
-      (contactList: ClientList) => {
-        console.log('Contatos carregados:', contactList);
-        this.contacts = contactList;
-      },
-      (error) => {
-        console.error('Erro ao carregar contatos:', error);
-      }
-    );
+    
+    // Start polling every 3 seconds (5000 ms)
+    this.userService.startPolling(3000);
   }
 
   get filteredContacts() {

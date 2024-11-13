@@ -68,7 +68,7 @@ export class UserService {
   setUserName(name: string): Observable<ConnectResponse> {
     const params = new HttpParams().set('nome', name);
     
-    return this.http.post<ConnectResponse>(`n${this.baseUrl}/connect`, null, { params }).pipe(
+    return this.http.post<ConnectResponse>(`${this.baseUrl}/connect`, null, { params }).pipe(
       tap(response => {
         this.currentClientIdSubject.next(response.clientId);
         this.userNameSubject.next(response.clientName);
@@ -86,8 +86,9 @@ export class UserService {
     return this.userNameSubject.value;
   }
 
-  getContactList(): Observable<ClientList> {
-    return this.http.get<ClientList>(`${this.baseUrl}/list`).pipe(
+  getContactList(clientIdUpdate: number): Observable<ClientList> {
+    const params = new HttpParams().set('clientId',clientIdUpdate)
+    return this.http.get<ClientList>(`${this.baseUrl}/list`, {params}).pipe(
       tap((contactList: ClientList) => {
         this.contacts = contactList;
       })
@@ -96,16 +97,16 @@ export class UserService {
 
   startPolling(intervalMs: number) {
     this.subscription = interval(intervalMs).pipe(
-      switchMap(() => this.getContactList())
+      switchMap(() => this.getContactList(this.currentClientIdSubject.value))
     ).subscribe(
       (contactList) => {
         console.log('Updated contacts:', contactList);
       },
       (error) => {
         console.error('Error fetching contact list:', error);
-      }
-    );
-  }
+      }
+    );
+  }
 
   stopPolling() {
     if (this.subscription) {
