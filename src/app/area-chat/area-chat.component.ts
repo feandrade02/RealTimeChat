@@ -23,16 +23,19 @@ export class AreaChatComponent {
   }
   
   sendMessage() {
-    this.activeContact$.subscribe(contact => {
-      if (contact && this.mensagemConteudo.trim()) {
-        this.userService.sendMessage(contact.clientId, this.mensagemConteudo).subscribe(() => {
-          // Adiciona a mensagem à lista de mensagens
-          this.mensagens.push({ autor: 'Você', texto: this.mensagemConteudo });
-          // Limpa o campo de entrada
-          this.mensagemConteudo = '';
-        });
-      }
+    this.userService.currentClientId$.subscribe(senderId => {
+      this.activeContact$.subscribe(contact => {
+        if (contact && this.mensagemConteudo.trim()) {
+          // Envia a mensagem com os valores corretos de senderId e contact.clientId como receiverId
+          this.userService.sendMessage(contact.clientId, this.mensagemConteudo).subscribe(() => {
+            // Adiciona a mensagem enviada à lista de mensagens
+            this.mensagens.push({ autor: 'Você', texto: this.mensagemConteudo });
+            // Limpa o campo de entrada
+            this.mensagemConteudo = '';
+          });
+        }
+      });
     });
-  }
+  }  
 
 }

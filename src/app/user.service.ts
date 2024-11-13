@@ -99,7 +99,7 @@ export class UserService {
   // Enviar mensagem
   sendMessage(receiverId: number, content: string): Observable<any> {
     const message = {
-      senderId: this.currentClientId$,
+      senderId: this.currentClientIdSubject.value,
       receiverId: receiverId,
       content: content,
       timestamp: new Date().toISOString(),
