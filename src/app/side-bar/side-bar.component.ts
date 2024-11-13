@@ -54,9 +54,9 @@ export class SideBarComponent implements OnInit {
     return this.contacts.client_list.filter(contact => contact.clientId !== this.currentUserId);
   }
 
-  // selectContact(contact: Contact) {
-  //   this.contactSelected.emit(contact);
-  // }
+  selectContact(contact: Contact) {
+    this.contactSelected.emit(contact);
+  }
 
   onContactClick(contact: Contact) {
     // Primeiro emitimos o evento

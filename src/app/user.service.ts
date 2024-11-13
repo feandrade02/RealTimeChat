@@ -80,8 +80,11 @@ export class UserService {
 
   // Iniciar conversa com outro usuário
   startConversation(clientId: number, targetClientId: number): Observable<any> {
-    const params = new HttpParams().set('clientId', clientId.toString()).set('targetClientId', targetClientId.toString());
-    return this.http.post(`${this.baseUrl}/start-conversation`, null, { params }).pipe(
+    const params = new HttpParams()
+      .set('clientId', clientId.toString())
+      .set('targetClientId', targetClientId.toString());
+
+    return this.http.post(`${this.baseUrl}/start-conversation`, null, { params, responseType: 'text' }).pipe(
       tap(() => {
         const contact = this.contacts.client_list.find(c => c.clientId === targetClientId);
         if (contact) this.setActiveContact(contact);
