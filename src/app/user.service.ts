@@ -146,12 +146,13 @@ export class UserService {
 
   // Carregar mensagens anteriores
   loadMessages(targetClientId: number): Observable<any> {
-    const params = new HttpParams()
-      .set('clientId', this.currentClientId ?? 0)
+    let params = new HttpParams()
+      .set('clientId', this.currentClientIdSubject.value.toString())
       .set('targetClientId', targetClientId.toString());
-    
-    return this.http.get(`${this.baseUrl}/load-messages`, { params });
-  }
+
+    // Make the HTTP GET request with parameters
+    return this.http.get(`${this.baseUrl}/load-messages`, { params });
+  }
 
   startPollingMessages(intervalMs: number) {
     let id: number | undefined;
