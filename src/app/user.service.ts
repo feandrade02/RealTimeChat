@@ -43,8 +43,6 @@ export class UserService {
   private subscription!: Subscription;
   private subscription2!: Subscription;
   public messagesList: MessageList = { messages: [] }; 
-  mensagens: { autor: string, texto: string }[] = [];
-  
 
   private activeContactSubject = new BehaviorSubject<Contact | null>(null);
   activeContact$ = this.activeContactSubject.asObservable();
