@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../user.service';
 import { Observable } from 'rxjs';
-import { Contact } from '../user.service';
-
-interface ClientList {
-  client_list: Contact[];
-}
+import { Contact, ClientList } from '../user.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -22,7 +18,7 @@ export class SideBarComponent implements OnInit {
   userName$!: Observable<string>;
   activeContact$!: Observable<Contact | null>;
   currentUserId!: number;
-  contacts: ClientList = { client_list: [] };
+  contacts: ClientList = { client_list: [] }; 
 
   constructor(private userService: UserService) {
     this.activeContact$ = this.userService.activeContact$;
@@ -36,6 +32,8 @@ export class SideBarComponent implements OnInit {
 
     // Busca a lista de contatos do servidor
     this.loadContacts();
+    // Start polling every 5 seconds (5000 ms)
+    this.userService.startPolling(5000);
   }
 
   private loadContacts() {
@@ -51,8 +49,8 @@ export class SideBarComponent implements OnInit {
   }
 
   get filteredContacts() {
-    return this.contacts.client_list.filter(contact => contact.clientId !== this.currentUserId);
-  }
+    return this.userService.contacts.client_list.filter(contact => contact.clientId !== this.currentUserId);
+  }
 
   selectContact(contact: Contact) {
     this.contactSelected.emit(contact);

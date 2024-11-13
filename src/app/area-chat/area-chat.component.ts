@@ -2,24 +2,29 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserService, Contact } from '../user.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-area-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './area-chat.component.html',
   styleUrl: './area-chat.component.css'
 })
 export class AreaChatComponent {
+  nameControl = new FormControl('', [Validators.required]);
   activeContact$!: Observable<Contact | null>;
   mensagemConteudo: string = '';
   mensagens: { autor: string, texto: string }[] = []; 
-
+  
   constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.activeContact$ = this.userService.activeContact$;
+  }
+
+  get isNameInvalid() {
+    return this.nameControl.invalid && this.nameControl.touched;
   }
   
   sendMessage() {
@@ -35,7 +40,7 @@ export class AreaChatComponent {
           });
         }
       });
-    });
-  }  
+    });
+  } 
 
 }

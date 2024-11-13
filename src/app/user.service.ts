@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, interval, Subscription } from 'rxjs';
+import { tap, switchMap } from 'rxjs/operators';
 
 interface ConnectResponse {
   clientId: number;
@@ -16,7 +16,7 @@ export interface Contact {
   lastActivity: string;
 }
 
-interface ClientList {
+export interface ClientList {
   client_list: Contact[];
 }
 
@@ -26,7 +26,9 @@ interface ClientList {
 export class UserService {
   private baseUrl = 'http://localhost:5000/api/chat';
   private currentClientId: number = 0;
-  private contacts: ClientList = { client_list: [] }; 
+  public contacts: ClientList = { client_list: [] }; 
+  private subscription!: Subscription;
+
 
   private activeContactSubject = new BehaviorSubject<Contact | null>(null);
   activeContact$ = this.activeContactSubject.asObservable();
@@ -108,6 +110,25 @@ export class UserService {
     
     return this.http.post(`${this.baseUrl}/send`, message);
   }
+
+  startPolling(intervalMs: number) {
+    this.subscription = interval(intervalMs).pipe(
+      switchMap(() => this.getContactList())
+    ).subscribe(
+      (contactList) => {
+        console.log('Updated contacts:', contactList);
+      },
+      (error) => {
+        console.error('Error fetching contact list:', error);
+      }
+    );
+  }
+  
+  stopPolling() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 
   // Carregar mensagens anteriores
   loadMessages(targetClientId: number): Observable<any> {
