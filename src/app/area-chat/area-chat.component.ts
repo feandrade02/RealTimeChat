@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserService, Contact } from '../user.service';
 import { FormsModule, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MessageList } from '../user.service';
 
 @Component({
   selector: 'app-area-chat',
@@ -14,13 +15,20 @@ import { FormsModule, FormControl, Validators, ReactiveFormsModule } from '@angu
 export class AreaChatComponent {
   nameControl = new FormControl('', [Validators.required]);
   activeContact$!: Observable<Contact | null>;
+  activeMessages$!: Observable<MessageList | null>;
   mensagemConteudo: string = '';
-  mensagens: { autor: string, texto: string }[] = []; 
+  listMessages: MessageList = {message_list: []};
+ 
   
-  constructor(private userService: UserService) {}
+  constructor(public userService: UserService) {}
 
   ngOnInit() {
     this.activeContact$ = this.userService.activeContact$;
+    this.userService.startPollingMessages(2000);
+  
+    this.userService.currentClientId$.subscribe(clientId => {
+      this.userService.messagesList.message_list = this.listMessages.message_list;
+    });
   }
 
   get isNameInvalid() {
@@ -33,8 +41,6 @@ export class AreaChatComponent {
         if (contact && this.mensagemConteudo.trim()) {
           // Envia a mensagem com os valores corretos de senderId e contact.clientId como receiverId
           this.userService.sendMessage(contact.clientId, this.mensagemConteudo).subscribe(() => {
-            // Adiciona a mensagem enviada à lista de mensagens
-            this.mensagens.push({ autor: 'Você', texto: this.mensagemConteudo });
             // Limpa o campo de entrada
             this.mensagemConteudo = '';
           });

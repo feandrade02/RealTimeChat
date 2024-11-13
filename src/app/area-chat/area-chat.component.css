@@ -20,7 +20,7 @@
     display: flex;
     background-color: #234e64;
     padding: 10px;
-    margin-bottom: 38px;
+    margin-bottom: 20px;
   }
   
   input[type="text"] {
@@ -45,4 +45,3 @@
   button:hover {
     background-color: #3a8fad;
   }
-  

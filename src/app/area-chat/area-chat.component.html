@@ -1,14 +1,11 @@
 <div class="chat">
   <div class="mensagens">
-    <p *ngFor="let mensagem of mensagens">
-      <strong>{{ mensagem.autor }}:</strong> {{ mensagem.texto }}
+    <p *ngFor="let mensagem of listMessages.message_list">
+      <strong>{{ mensagem.SenderId === userService.getCurrentClientId() ? 'Você' : 'Contato' }}:</strong> {{ mensagem.Content }}
     </p>
   </div>
   <div class="input-area">
     <input type="text" placeholder="Mensagem" [(ngModel)]="mensagemConteudo" [formControl]="nameControl" />
-    <div *ngIf="isNameInvalid" class="error-message">
-      Preencha o campo.
-    </div>
-    <button [disabled]="isNameInvalid"  (click)="sendMessage()">Enviar</button>
-  </div>
-  </div>
+    <button [disabled]="isNameInvalid" (click)="sendMessage()">Enviar</button>
+  </div>
+</div>

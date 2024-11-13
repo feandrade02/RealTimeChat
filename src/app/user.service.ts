@@ -20,6 +20,17 @@ export interface ClientList {
   client_list: Contact[];
 }
 
+export interface Message {
+  SenderId: number;
+  ReceiverId: number;
+  Content: string;
+  Timestamp: string;
+  ConversationId: string;
+}
+
+export interface MessageList {
+  message_list: Message[];
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -28,6 +39,9 @@ export class UserService {
   private currentClientId: number = 0;
   public contacts: ClientList = { client_list: [] }; 
   private subscription!: Subscription;
+  private subscription2!: Subscription;
+  public messagesList: MessageList = { message_list: [] }; 
+
 
 
   private activeContactSubject = new BehaviorSubject<Contact | null>(null);
@@ -138,5 +152,22 @@ export class UserService {
     
     return this.http.get(`${this.baseUrl}/load-messages`, { params });
   }
+
+  startPollingMessages(intervalMs: number) {
+    let id: number | undefined;
+    
+    this.activeContact$.subscribe(contact => {
+      if (contact) id = contact.clientId;
+    });
+  
+    this.subscription2 = interval(intervalMs).pipe(
+      switchMap(() => this.loadMessages(id!)),
+      tap(messagesList => this.messagesList = messagesList)
+    ).subscribe(
+      () => console.log('Mensagens atualizadas:', this.messagesList),
+      (error) => console.error('Erro ao buscar mensagens:', error)
+    );
+  }
+
 
 }
