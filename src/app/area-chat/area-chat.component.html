@@ -1,11 +1,19 @@
 <div class="chat">
   <div class="mensagens">
-    <p *ngFor="let mensagem of listMessages.message_list">
-      <strong>{{ mensagem.SenderId === userService.getCurrentClientId() ? 'Você' : 'Contato' }}:</strong> {{ mensagem.Content }}
-    </p>
+      <p *ngFor="let mensagem of filteredMessages">
+        <strong>{{ mensagem.senderId }}:</strong> {{ mensagem.content }}
+      </p>
   </div>
   <div class="input-area">
-    <input type="text" placeholder="Mensagem" [(ngModel)]="mensagemConteudo" [formControl]="nameControl" />
-    <button [disabled]="isNameInvalid" (click)="sendMessage()">Enviar</button>
+    <input 
+      type="text" 
+      placeholder="Digite sua mensagem..." 
+      [(ngModel)]="mensagemConteudo" 
+      (keyup.enter)="sendMessage()" />
+    <button 
+      [disabled]="!mensagemConteudo.trim()" 
+      (click)="sendMessage()">
+      Enviar
+    </button>
   </div>
 </div>

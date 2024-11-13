@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserService, Contact } from '../user.service';
 import { FormsModule, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -12,21 +12,18 @@ import { MessageList } from '../user.service';
   templateUrl: './area-chat.component.html',
   styleUrl: './area-chat.component.css'
 })
-export class AreaChatComponent {
+
+export class AreaChatComponent implements OnInit{
   nameControl = new FormControl('', [Validators.required]);
   activeContact$!: Observable<Contact | null>;
   activeMessages$!: Observable<MessageList | null>;
   mensagemConteudo: string = '';
-  listMessages: MessageList = {message_list: []};
- 
   
-  constructor(public userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.activeContact$ = this.userService.activeContact$;
-    
-    this.userService.startPollingMessages(2000);
-    
+    this.userService.startPollingMessages(100);
   }
 
   get isNameInvalid() {
@@ -34,7 +31,8 @@ export class AreaChatComponent {
   }
 
   get filteredMessages() {
-    return this.userService.messagesList.message_list;
+    console.log("Message List: ",this.userService.messagesList);
+    return this.userService.messagesList.messages;
   }
   
   sendMessage() {
@@ -44,12 +42,11 @@ export class AreaChatComponent {
         if (contact && this.mensagemConteudo.trim()) {
           // Envia a mensagem com os valores corretos de senderId e contact.clientId como receiverId
           this.userService.sendMessage(contact.clientId, this.mensagemConteudo).subscribe(() => {
-            // Limpa o campo de entrada
             this.mensagemConteudo = '';
           });
         }
       });
-    });
-  } 
+    });
+  } 
 
 }

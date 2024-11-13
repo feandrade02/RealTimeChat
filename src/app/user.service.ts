@@ -16,33 +16,35 @@ export interface Contact {
   lastActivity: string;
 }
 
+export interface Message {
+  senderId: number;
+  receiverId: number;
+  content: string;
+  timestamp: string;
+  conversationId: number;
+}
+
+export interface MessageList {
+  messages: Message[];
+}
+
 export interface ClientList {
   client_list: Contact[];
 }
 
-export interface Message {
-  SenderId: number;
-  ReceiverId: number;
-  Content: string;
-  Timestamp: string;
-  ConversationId: string;
-}
-
-export interface MessageList {
-  message_list: Message[];
-}
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserService {
   private baseUrl = 'http://localhost:5000/api/chat';
   private currentClientId: number = 0;
   public contacts: ClientList = { client_list: [] }; 
   private subscription!: Subscription;
   private subscription2!: Subscription;
-  public messagesList: MessageList = { message_list: [] }; 
-
-
+  public messagesList: MessageList = { messages: [] }; 
+  mensagens: { autor: string, texto: string }[] = [];
+  
 
   private activeContactSubject = new BehaviorSubject<Contact | null>(null);
   activeContact$ = this.activeContactSubject.asObservable();
@@ -68,7 +70,7 @@ export class UserService {
   setUserName(name: string): Observable<ConnectResponse> {
     const params = new HttpParams().set('nome', name);
     
-    return this.http.post<ConnectResponse>(`${this.baseUrl}/connect`, null, { params }).pipe(
+    return this.http.post<ConnectResponse>(`n${this.baseUrl}/connect`, null, { params }).pipe(
       tap(response => {
         this.currentClientIdSubject.next(response.clientId);
         this.userNameSubject.next(response.clientName);
@@ -92,6 +94,25 @@ export class UserService {
         this.contacts = contactList;
       })
     );
+  }
+
+  startPolling(intervalMs: number) {
+    this.subscription = interval(intervalMs).pipe(
+      switchMap(() => this.getContactList())
+    ).subscribe(
+      (contactList) => {
+        console.log('Updated contacts:', contactList);
+      },
+      (error) => {
+        console.error('Error fetching contact list:', error);
+      }
+    );
+  }
+
+  stopPolling() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   // Iniciar conversa com outro usuário
@@ -125,52 +146,40 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/send`, message);
   }
 
-  startPolling(intervalMs: number) {
-    this.subscription = interval(intervalMs).pipe(
-      switchMap(() => this.getContactList())
-    ).subscribe(
-      (contactList) => {
-        console.log('Updated contacts:', contactList);
-      },
-      (error) => {
-        console.error('Error fetching contact list:', error);
-      }
-    );
-  }
-  
-  stopPolling() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
   // Carregar mensagens anteriores
-  loadMessages(targetClientId: number): Observable<any> {
+  loadMessages(targetClientId: number): Observable<MessageList> {
     let params = new HttpParams()
       .set('clientId', this.currentClientIdSubject.value.toString())
       .set('targetClientId', targetClientId.toString());
 
     // Make the HTTP GET request with parameters
-    return this.http.get(`${this.baseUrl}/load-messages`, { params });
-  }
+    return this.http.get<MessageList>(`${this.baseUrl}/load-messages`, { params }).pipe(
+      tap((mensagemList: MessageList) => {
+        // console.log("Mensagem do userService: ",mensagemList);
+        this.messagesList = mensagemList;
+        // console.log("Mensagem depois do userService!!!: ",mensagemList);
+      })
+    );
 
-startPollingMessages(intervalMs: number) {
-  var id: number;
-  this.activeContact$.subscribe(contact => {
-    if(contact){
-      id = contact.clientId;
-    }
-  })
-  this.subscription2 = interval(intervalMs).pipe(
-    switchMap(() => this.loadMessages(id))
-  ).subscribe(
-    (messagesList) => {
-      console.log('Updated messages:', messagesList);
-    },
-    (error) => {
-      console.error('Error fetching contact list:', error);
-    }
-  );
-}
+  }
+
+  startPollingMessages(intervalMs: number) {
+    var id: number;
+    this.activeContact$.subscribe(contact => {
+      if(contact){
+        id = contact.clientId;
+      }
+    })
+    this.subscription2 = interval(intervalMs).pipe(
+      switchMap(() => this.loadMessages(id))
+    ).subscribe(
+      (messagesList) => {
+        console.log('Updated messages:', messagesList);
+      },
+      (error) => {
+        console.error('Error fetching contact list:', error);
+      }
+    );
+  }
 
 }
