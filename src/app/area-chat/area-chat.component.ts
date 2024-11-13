@@ -24,18 +24,21 @@ export class AreaChatComponent {
 
   ngOnInit() {
     this.activeContact$ = this.userService.activeContact$;
+    
     this.userService.startPollingMessages(2000);
-  
-    this.userService.currentClientId$.subscribe(clientId => {
-      this.userService.messagesList.message_list = this.listMessages.message_list;
-    });
+    
   }
 
   get isNameInvalid() {
     return this.nameControl.invalid && this.nameControl.touched;
   }
+
+  get filteredMessages() {
+    return this.userService.messagesList.message_list;
+  }
   
   sendMessage() {
+    console.log(this.userService.messagesList);
     this.userService.currentClientId$.subscribe(senderId => {
       this.activeContact$.subscribe(contact => {
         if (contact && this.mensagemConteudo.trim()) {
@@ -46,7 +49,7 @@ export class AreaChatComponent {
           });
         }
       });
-    });
-  } 
+    });
+  } 
 
 }

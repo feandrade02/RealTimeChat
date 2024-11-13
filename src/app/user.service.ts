@@ -146,28 +146,31 @@ export class UserService {
 
   // Carregar mensagens anteriores
   loadMessages(targetClientId: number): Observable<any> {
-    const params = new HttpParams()
-      .set('clientId', this.currentClientId ?? 0)
+    let params = new HttpParams()
+      .set('clientId', this.currentClientIdSubject.value.toString())
       .set('targetClientId', targetClientId.toString());
-    
-    return this.http.get(`${this.baseUrl}/load-messages`, { params });
-  }
+
+    // Make the HTTP GET request with parameters
+    return this.http.get(`${this.baseUrl}/load-messages`, { params });
+  }
 
   startPollingMessages(intervalMs: number) {
-    let id: number | undefined;
-    
+    var id: number;
     this.activeContact$.subscribe(contact => {
-      if (contact) id = contact.clientId;
-    });
-  
+      if(contact){
+        id = contact.clientId;
+      }
+    })
     this.subscription2 = interval(intervalMs).pipe(
-      switchMap(() => this.loadMessages(id!)),
-      tap(messagesList => this.messagesList = messagesList)
+      switchMap(() => this.loadMessages(id))
     ).subscribe(
-      () => console.log('Mensagens atualizadas:', this.messagesList),
-      (error) => console.error('Erro ao buscar mensagens:', error)
+      (messagesList) => {
+        console.log('Updated messages:', messagesList);
+      },
+      (error) => {
+        console.error('Error fetching contact list:', error);
+      }
     );
   }
-
 
 }
