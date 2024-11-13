@@ -155,20 +155,22 @@ export class UserService {
   }
 
   startPollingMessages(intervalMs: number) {
-    let id: number | undefined;
-    
+    var id: number;
     this.activeContact$.subscribe(contact => {
-      if (contact) id = contact.clientId;
-    });
-  
+      if(contact){
+        id = contact.clientId;
+      }
+    })
     this.subscription2 = interval(intervalMs).pipe(
-      switchMap(() => this.loadMessages(id!)),
-      tap(messagesList => this.messagesList = messagesList)
+      switchMap(() => this.loadMessages(id))
     ).subscribe(
-      () => console.log('Mensagens atualizadas:', this.messagesList),
-      (error) => console.error('Erro ao buscar mensagens:', error)
+      (messagesList) => {
+        console.log('Updated messages:', messagesList);
+      },
+      (error) => {
+        console.error('Error fetching contact list:', error);
+      }
     );
   }
-
 
 }
