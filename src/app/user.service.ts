@@ -37,7 +37,7 @@ export interface ClientList {
 })
 
 export class UserService {
-  private baseUrl = 'http://localhost:5000/api/chat';
+  private baseUrl = 'http://10.14.93.213:5000/api/chat';
   private currentClientId: number = 0;
   public contacts: ClientList = { client_list: [] }; 
   private subscription!: Subscription;
@@ -46,6 +46,9 @@ export class UserService {
 
   private activeContactSubject = new BehaviorSubject<Contact | null>(null);
   activeContact$ = this.activeContactSubject.asObservable();
+
+  private activeContactIdSubject = new BehaviorSubject<number | null>(null);
+  activeContactId$ = this.activeContactIdSubject.asObservable();
 
   private currentClientIdSubject = new BehaviorSubject<number>(0);
   currentClientId$ = this.currentClientIdSubject.asObservable();
@@ -130,6 +133,7 @@ export class UserService {
 
   setActiveContact(contact: Contact) {
     this.activeContactSubject.next(contact);
+    this.activeContactIdSubject.next(contact.clientId);
   }
   
   // Enviar mensagem

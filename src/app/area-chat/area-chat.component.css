@@ -50,3 +50,11 @@
     background: #ccc;
     cursor: not-allowed;
   }
+
+  .msg-recebe {
+    justify-self: start;
+  }
+
+  .msg-envia {
+    justify-self: end;
+  }

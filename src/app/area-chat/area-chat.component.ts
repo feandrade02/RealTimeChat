@@ -18,12 +18,16 @@ export class AreaChatComponent implements OnInit{
   activeContact$!: Observable<Contact | null>;
   activeMessages$!: Observable<MessageList | null>;
   mensagemConteudo: string = '';
+  activeContactId: number | null = null;
   
   constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.activeContact$ = this.userService.activeContact$;
     this.userService.startPollingMessages(100);
+    this.userService.activeContactId$.subscribe(id => {
+      this.activeContactId = id;
+    });
   }
 
   get isNameInvalid() {
