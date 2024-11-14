@@ -1,6 +1,6 @@
 <div class="chat">
   <div class="mensagens">
-      <p *ngFor="let mensagem of filteredMessages" [ngClass]="mensagem.senderId == activeContactId? 'msg-recebe' : 'msg-envia'">
+      <p *ngFor="let mensagem of filteredMessages" [ngClass]="mensagem.senderId == activeContactId? 'recebe' : 'envia'">
         <strong>{{ mensagem.senderId }}:</strong> {{ mensagem.content }}
       </p>
   </div>

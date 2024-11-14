@@ -51,10 +51,11 @@
     cursor: not-allowed;
   }
 
-  .msg-recebe {
-    justify-self: start;
+  .recebe {
+    padding: 0 1vw;
   }
 
-  .msg-envia {
-    justify-self: end;
+  .envia {
+    text-align: right;
+    padding: 0 1vw;
   }
